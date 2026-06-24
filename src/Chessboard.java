@@ -61,6 +61,7 @@ public class Chessboard extends JPanel {
                                 piece.color.equals(currentTurn)) {
 
                             selectedPiece = piece;
+                            repaint();
                             break;
                         }
                     }
@@ -113,6 +114,7 @@ public class Chessboard extends JPanel {
 
         super.paintComponent(g);
 
+        // Board
         for (int row = 0; row < 8; row++) {
 
             for (int col = 0; col < 8; col++) {
@@ -132,6 +134,7 @@ public class Chessboard extends JPanel {
             }
         }
 
+        // Pieces
         for (Piece piece : pieces) {
 
             if (piece.color.equals("White")) {
@@ -150,6 +153,7 @@ public class Chessboard extends JPanel {
             g.drawString(text, x, y);
         }
 
+        // Selected piece highlight
         if (selectedPiece != null) {
 
             g.setColor(Color.GREEN);
@@ -162,7 +166,11 @@ public class Chessboard extends JPanel {
             );
         }
 
+        // Bottom panel
+        g.setColor(Color.LIGHT_GRAY);
+        g.fillRect(0, 640, 640, 80);
+
         g.setColor(Color.BLACK);
-        g.drawString("Turn: " + currentTurn, 10, 655);
+        g.drawString("Current Turn: " + currentTurn, 20, 685);
     }
 }

@@ -6,7 +6,7 @@ public class Main {
 
         JFrame frame = new JFrame("Chess");
 
-        frame.setSize(660, 680);
+        frame.setSize(660, 750);
         frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 

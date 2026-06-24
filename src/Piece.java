@@ -41,12 +41,36 @@ public class Piece {
             case "Pawn":
 
                 if (color.equals("White")) {
-                    return targetCol == col &&
-                            targetRow == row - 1;
+
+                    // Forward move
+                    if (targetCol == col &&
+                            targetRow == row - 1) {
+                        return true;
+                    }
+
+                    // Diagonal move (capture pattern)
+                    if (Math.abs(targetCol - col) == 1 &&
+                            targetRow == row - 1) {
+                        return true;
+                    }
+
                 } else {
-                    return targetCol == col &&
-                            targetRow == row + 1;
+
+                    // Forward move
+                    if (targetCol == col &&
+                            targetRow == row + 1) {
+                        return true;
+                    }
+
+                    // Diagonal move (capture pattern)
+                    if (Math.abs(targetCol - col) == 1 &&
+                            targetRow == row + 1) {
+                        return true;
+                    }
+
                 }
+
+                return false;
 
             default:
                 return false;
