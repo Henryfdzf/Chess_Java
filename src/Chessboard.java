@@ -10,22 +10,38 @@ public class Chessboard extends JPanel {
     private final int tileSize = 80;
 
     private Piece selectedPiece = null;
+    private String currentTurn = "White";
 
     ArrayList<Piece> pieces = new ArrayList<>();
 
     public Chessboard() {
 
-        pieces.add(new Piece("Rook", 7, 0));
-        pieces.add(new Piece("Knight", 7, 1));
-        pieces.add(new Piece("Bishop", 7, 2));
-        pieces.add(new Piece("Queen", 7, 3));
-        pieces.add(new Piece("King", 7, 4));
-        pieces.add(new Piece("Bishop", 7, 5));
-        pieces.add(new Piece("Knight", 7, 6));
-        pieces.add(new Piece("Rook", 7, 7));
+        // White pieces
+        pieces.add(new Piece("Rook", "White", 7, 0));
+        pieces.add(new Piece("Knight", "White", 7, 1));
+        pieces.add(new Piece("Bishop", "White", 7, 2));
+        pieces.add(new Piece("Queen", "White", 7, 3));
+        pieces.add(new Piece("King", "White", 7, 4));
+        pieces.add(new Piece("Bishop", "White", 7, 5));
+        pieces.add(new Piece("Knight", "White", 7, 6));
+        pieces.add(new Piece("Rook", "White", 7, 7));
 
         for (int col = 0; col < 8; col++) {
-            pieces.add(new Piece("Pawn", 6, col));
+            pieces.add(new Piece("Pawn", "White", 6, col));
+        }
+
+        // Black pieces
+        pieces.add(new Piece("Rook", "Black", 0, 0));
+        pieces.add(new Piece("Knight", "Black", 0, 1));
+        pieces.add(new Piece("Bishop", "Black", 0, 2));
+        pieces.add(new Piece("Queen", "Black", 0, 3));
+        pieces.add(new Piece("King", "Black", 0, 4));
+        pieces.add(new Piece("Bishop", "Black", 0, 5));
+        pieces.add(new Piece("Knight", "Black", 0, 6));
+        pieces.add(new Piece("Rook", "Black", 0, 7));
+
+        for (int col = 0; col < 8; col++) {
+            pieces.add(new Piece("Pawn", "Black", 1, col));
         }
 
         addMouseListener(new MouseAdapter() {
@@ -40,9 +56,11 @@ public class Chessboard extends JPanel {
 
                     for (Piece piece : pieces) {
 
-                        if (piece.row == row && piece.col == col) {
+                        if (piece.row == row &&
+                                piece.col == col &&
+                                piece.color.equals(currentTurn)) {
+
                             selectedPiece = piece;
-                            System.out.println("Selected: " + piece.name);
                             break;
                         }
                     }
@@ -51,12 +69,36 @@ public class Chessboard extends JPanel {
 
                     if (selectedPiece.canMove(row, col)) {
 
+                        Piece capturedPiece = null;
+
+                        for (Piece piece : pieces) {
+
+                            if (piece.row == row &&
+                                    piece.col == col &&
+                                    piece != selectedPiece) {
+
+                                if (!piece.color.equals(selectedPiece.color)) {
+                                    capturedPiece = piece;
+                                } else {
+                                    selectedPiece = null;
+                                    repaint();
+                                    return;
+                                }
+                            }
+                        }
+
+                        if (capturedPiece != null) {
+                            pieces.remove(capturedPiece);
+                        }
+
                         selectedPiece.row = row;
                         selectedPiece.col = col;
 
-                        System.out.println("Moved!");
-                    } else {
-                        System.out.println("Invalid move!");
+                        if (currentTurn.equals("White")) {
+                            currentTurn = "Black";
+                        } else {
+                            currentTurn = "White";
+                        }
                     }
 
                     selectedPiece = null;
@@ -90,19 +132,27 @@ public class Chessboard extends JPanel {
             }
         }
 
-        g.setColor(Color.BLACK);
-
         for (Piece piece : pieces) {
 
-            int x = piece.col * tileSize + 10;
+            if (piece.color.equals("White")) {
+                g.setColor(Color.BLUE);
+            } else {
+                g.setColor(Color.RED);
+            }
+
+            int x = piece.col * tileSize + 5;
             int y = piece.row * tileSize + 40;
 
-            g.drawString(piece.name, x, y);
+            String text =
+                    piece.color.charAt(0)
+                            + piece.name.substring(0, 1);
+
+            g.drawString(text, x, y);
         }
 
         if (selectedPiece != null) {
 
-            g.setColor(Color.RED);
+            g.setColor(Color.GREEN);
 
             g.drawRect(
                     selectedPiece.col * tileSize,
@@ -111,5 +161,8 @@ public class Chessboard extends JPanel {
                     tileSize
             );
         }
+
+        g.setColor(Color.BLACK);
+        g.drawString("Turn: " + currentTurn, 10, 655);
     }
 }

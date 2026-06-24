@@ -1,11 +1,14 @@
 public class Piece {
 
     String name;
+    String color;
+
     int row;
     int col;
 
-    public Piece(String name, int row, int col) {
+    public Piece(String name, String color, int row, int col) {
         this.name = name;
+        this.color = color;
         this.row = row;
         this.col = col;
     }
@@ -36,8 +39,14 @@ public class Piece {
                         (rowDiff == 1 && colDiff == 2);
 
             case "Pawn":
-                return targetCol == col &&
-                        targetRow == row - 1;
+
+                if (color.equals("White")) {
+                    return targetCol == col &&
+                            targetRow == row - 1;
+                } else {
+                    return targetCol == col &&
+                            targetRow == row + 1;
+                }
 
             default:
                 return false;
