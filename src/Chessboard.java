@@ -1,11 +1,15 @@
 import javax.swing.JPanel;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
 public class Chessboard extends JPanel {
 
     private final int tileSize = 80;
+
+    private Piece selectedPiece = null;
 
     ArrayList<Piece> pieces = new ArrayList<>();
 
@@ -23,6 +27,43 @@ public class Chessboard extends JPanel {
         for (int col = 0; col < 8; col++) {
             pieces.add(new Piece("Pawn", 6, col));
         }
+
+        addMouseListener(new MouseAdapter() {
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+
+                int col = e.getX() / tileSize;
+                int row = e.getY() / tileSize;
+
+                if (selectedPiece == null) {
+
+                    for (Piece piece : pieces) {
+
+                        if (piece.row == row && piece.col == col) {
+                            selectedPiece = piece;
+                            System.out.println("Selected: " + piece.name);
+                            break;
+                        }
+                    }
+
+                } else {
+
+                    if (selectedPiece.canMove(row, col)) {
+
+                        selectedPiece.row = row;
+                        selectedPiece.col = col;
+
+                        System.out.println("Moved!");
+                    } else {
+                        System.out.println("Invalid move!");
+                    }
+
+                    selectedPiece = null;
+                    repaint();
+                }
+            }
+        });
     }
 
     @Override
@@ -57,6 +98,18 @@ public class Chessboard extends JPanel {
             int y = piece.row * tileSize + 40;
 
             g.drawString(piece.name, x, y);
+        }
+
+        if (selectedPiece != null) {
+
+            g.setColor(Color.RED);
+
+            g.drawRect(
+                    selectedPiece.col * tileSize,
+                    selectedPiece.row * tileSize,
+                    tileSize,
+                    tileSize
+            );
         }
     }
 }
