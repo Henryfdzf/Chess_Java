@@ -62,34 +62,75 @@ public class Chessboard extends JPanel {
 
                             selectedPiece = piece;
                             repaint();
-                            break;
+                            return;
                         }
                     }
 
                 } else {
 
-                    if (selectedPiece.canMove(row, col)) {
+                    Piece targetPiece = null;
 
-                        Piece capturedPiece = null;
+                    for (Piece piece : pieces) {
 
-                        for (Piece piece : pieces) {
+                        if (piece.row == row &&
+                                piece.col == col &&
+                                piece != selectedPiece) {
 
-                            if (piece.row == row &&
-                                    piece.col == col &&
-                                    piece != selectedPiece) {
+                            targetPiece = piece;
+                            break;
+                        }
+                    }
 
-                                if (!piece.color.equals(selectedPiece.color)) {
-                                    capturedPiece = piece;
-                                } else {
-                                    selectedPiece = null;
-                                    repaint();
-                                    return;
-                                }
+                    boolean validMove = false;
+
+                    if (selectedPiece.name.equals("Pawn")) {
+
+                        if (selectedPiece.color.equals("White")) {
+
+                            if (col == selectedPiece.col &&
+                                    row == selectedPiece.row - 1 &&
+                                    targetPiece == null) {
+
+                                validMove = true;
+                            }
+
+                            if (Math.abs(col - selectedPiece.col) == 1 &&
+                                    row == selectedPiece.row - 1 &&
+                                    targetPiece != null &&
+                                    targetPiece.color.equals("Black")) {
+
+                                validMove = true;
+                            }
+
+                        } else {
+
+                            if (col == selectedPiece.col &&
+                                    row == selectedPiece.row + 1 &&
+                                    targetPiece == null) {
+
+                                validMove = true;
+                            }
+
+                            if (Math.abs(col - selectedPiece.col) == 1 &&
+                                    row == selectedPiece.row + 1 &&
+                                    targetPiece != null &&
+                                    targetPiece.color.equals("White")) {
+
+                                validMove = true;
                             }
                         }
 
-                        if (capturedPiece != null) {
-                            pieces.remove(capturedPiece);
+                    } else {
+
+                        validMove = selectedPiece.canMove(row, col);
+                    }
+
+                    if (validMove) {
+
+                        if (targetPiece != null &&
+                                !targetPiece.color.equals(selectedPiece.color)) {
+
+                            pieces.remove(targetPiece);
                         }
 
                         selectedPiece.row = row;
@@ -114,7 +155,6 @@ public class Chessboard extends JPanel {
 
         super.paintComponent(g);
 
-        // Board
         for (int row = 0; row < 8; row++) {
 
             for (int col = 0; col < 8; col++) {
@@ -134,7 +174,6 @@ public class Chessboard extends JPanel {
             }
         }
 
-        // Pieces
         for (Piece piece : pieces) {
 
             if (piece.color.equals("White")) {
@@ -153,7 +192,6 @@ public class Chessboard extends JPanel {
             g.drawString(text, x, y);
         }
 
-        // Selected piece highlight
         if (selectedPiece != null) {
 
             g.setColor(Color.GREEN);
@@ -166,7 +204,6 @@ public class Chessboard extends JPanel {
             );
         }
 
-        // Bottom panel
         g.setColor(Color.LIGHT_GRAY);
         g.fillRect(0, 640, 640, 80);
 

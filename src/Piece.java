@@ -42,35 +42,16 @@ public class Piece {
 
                 if (color.equals("White")) {
 
-                    // Forward move
-                    if (targetCol == col &&
-                            targetRow == row - 1) {
-                        return true;
-                    }
-
-                    // Diagonal move (capture pattern)
-                    if (Math.abs(targetCol - col) == 1 &&
-                            targetRow == row - 1) {
-                        return true;
-                    }
+                    // move vertically
+                    return targetCol == col &&
+                            targetRow == row - 1;
 
                 } else {
 
-                    // Forward move
-                    if (targetCol == col &&
-                            targetRow == row + 1) {
-                        return true;
-                    }
-
-                    // Diagonal move (capture pattern)
-                    if (Math.abs(targetCol - col) == 1 &&
-                            targetRow == row + 1) {
-                        return true;
-                    }
-
+                    // move vertically
+                    return targetCol == col &&
+                            targetRow == row + 1;
                 }
-
-                return false;
 
             default:
                 return false;
